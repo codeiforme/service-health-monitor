@@ -1,17 +1,24 @@
 # Service Health Monitor
 
-A small project to practice HTTP health checks with Python.
+The monitor checks a local web service every 10 seconds and prints the result.
 
-Start a local server in one terminal:
+## Run
 
-```bash
-python3 -m http.server 8000 --bind 127.0.0.1
-```
-
-From the repository root in another terminal:
+In terminal A:
 
 ```bash
-TARGET_URL=http://localhost:8000 python3 -m app.monitor
+mkdir -p .lab
+FAILURE_FILE="$PWD/.lab/unhealthy" python3 -m app.target
 ```
 
-The script prints the status, HTTP code, and response time. A 2xx response counts as up. Stop the server and try again to see down. The script prints down as data; it does not exit with an error code.
+In terminal B, from the same repository root:
+
+```bash
+CHECK_INTERVAL=2 python3 -m app.monitor
+```
+
+In terminal C, run `touch .lab/unhealthy`. Wait for a down check, then run `rm .lab/unhealthy` and wait for up. Stop the Python processes with Ctrl+C.
+
+`TARGET_URL` changes the URL. `CHECK_INTERVAL` changes the delay after each check and must be a positive whole number. Requests use a three-second socket timeout.
+
+The target returns HTTP 503 from `/health` when the marker exists. `/live` still returns 200. This simulates an application problem, not a real server crash.

@@ -29,6 +29,22 @@ def check_url(url):
     }
 
 
+def main():
+    url = os.getenv("TARGET_URL", "http://localhost:8000/health")
+    interval = int(os.getenv("CHECK_INTERVAL", "10"))
+    if interval < 1:
+        raise SystemExit("CHECK_INTERVAL must be at least 1 second")
+
+    while True:
+        result = check_url(url)
+        result["target"] = url
+        result["timestamp"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        print(json.dumps(result), flush=True)
+        time.sleep(interval)
+
+
 if __name__ == "__main__":
-    url = os.getenv("TARGET_URL", "http://localhost:8000")
-    print(json.dumps(check_url(url)))
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Monitor stopped")
