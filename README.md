@@ -22,3 +22,7 @@ In terminal C, run `touch .lab/unhealthy`. Wait for a down check, then run `rm .
 `TARGET_URL` changes the URL. `CHECK_INTERVAL` changes the delay after each check and must be a positive whole number. Requests use a three-second socket timeout.
 
 The target returns HTTP 503 from `/health` when the marker exists. `/live` still returns 200. This simulates an application problem, not a real server crash.
+
+## Tests
+
+Run `bash scripts/check.sh` with Python 3.12. The four tests simulate HTTP success, HTTP failure, connection failure, and timeout. They do not contact a real server.
