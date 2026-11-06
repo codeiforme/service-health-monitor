@@ -1,28 +1,34 @@
 # Service Health Monitor
 
-The monitor checks a local web service every 10 seconds and prints the result.
+A small Python monitor that checks a web service and prints its status and response time.
 
 ## Run
 
-In terminal A:
+You need Docker with Compose, Bash, and curl. Run commands from the repository root.
 
 ```bash
-mkdir -p .lab
-FAILURE_FILE="$PWD/.lab/unhealthy" python3 -m app.target
+docker compose up -d --build target monitor
+docker compose logs -f monitor
 ```
 
-In terminal B, from the same repository root:
+Leave the log view with Ctrl+C. The containers keep running. Checks run about every 10 seconds.
+
+## Try a failure
 
 ```bash
-CHECK_INTERVAL=2 python3 -m app.monitor
+bash scripts/demo.sh down
+curl -i http://localhost:8000/health
 ```
 
-In terminal C, run `touch .lab/unhealthy`. Wait for a down check, then run `rm .lab/unhealthy` and wait for up. Stop the Python processes with Ctrl+C.
+Wait for a down check. Then restore the service:
 
-`TARGET_URL` changes the URL. `CHECK_INTERVAL` changes the delay after each check and must be a positive whole number. Requests use a three-second socket timeout.
+```bash
+bash scripts/demo.sh up
+docker compose logs --tail=10 monitor
+```
 
-The target returns HTTP 503 from `/health` when the marker exists. `/live` still returns 200. This simulates an application problem, not a real server crash.
+Wait for up. Use `docker compose down` to stop the project. The failure is simulated with a marker file.
 
 ## Tests
 
-Run `bash scripts/check.sh` with Python 3.12. The four tests simulate HTTP success, HTTP failure, connection failure, and timeout. They do not contact a real server.
+With Python 3.12, run `bash scripts/check.sh`. These tests simulate HTTP responses and errors. Use the demo above to check real behavior.

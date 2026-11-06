@@ -1,0 +1,14 @@
+services:
+  target:
+    build: .
+    image: service-health-monitor:local
+    command: ["python", "-m", "app.target"]
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  monitor:
+    build: .
+    image: service-health-monitor:local
+    environment:
+      TARGET_URL: http://target:8000/health
+      CHECK_INTERVAL: "10"
