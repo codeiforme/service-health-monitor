@@ -32,3 +32,7 @@ Wait for up. Use `docker compose down` to stop the project. The failure is simul
 ## Tests
 
 With Python 3.12, run `bash scripts/check.sh`. These tests simulate HTTP responses and errors. Use the demo above to check real behavior.
+
+## n8n
+
+Follow [the n8n setup](docs/n8n.md). The monitor sends its first result, then sends an event when the status changes. Failed delivery is tried again on the next check. `WEBHOOK_URL` is optional.

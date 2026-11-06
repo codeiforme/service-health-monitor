@@ -1,8 +1,9 @@
+import json
 import unittest
 from unittest.mock import patch
 from urllib.error import HTTPError, URLError
 
-from app.monitor import check_url
+from app.monitor import check_url, send_event
 
 
 class MonitorTests(unittest.TestCase):
@@ -29,3 +30,15 @@ class MonitorTests(unittest.TestCase):
     def test_request_times_out(self, open_url):
         open_url.side_effect = TimeoutError()
         self.assertEqual(check_url("http://test/health")["status"], "down")
+
+    @patch("app.monitor.urlopen")
+    def test_webhook_accepts_the_event(self, open_url):
+        open_url.return_value.__enter__.return_value.status = 200
+        self.assertTrue(send_event("http://test/webhook", {"status": "down"}))
+        request = open_url.call_args.args[0]
+        self.assertEqual(json.loads(request.data), {"status": "down"})
+
+    @patch("app.monitor.urlopen")
+    def test_webhook_is_unavailable(self, open_url):
+        open_url.side_effect = URLError("Connection refused")
+        self.assertFalse(send_event("http://test/webhook", {"status": "down"}))
