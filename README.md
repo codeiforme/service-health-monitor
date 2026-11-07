@@ -36,3 +36,7 @@ With Python 3.12, run `bash scripts/check.sh`. These tests simulate HTTP respons
 ## n8n
 
 Follow [the n8n setup](docs/n8n.md). The monitor sends its first result, then sends an event when the status changes. Failed delivery is tried again on the next check. `WEBHOOK_URL` is optional.
+
+## GitHub
+
+Follow [the GitHub setup](docs/github.md) to push the project and run the tests in Actions.
