@@ -16,3 +16,14 @@ jobs:
       - run: bash scripts/check.sh
       - run: docker compose config --quiet
       - run: docker build -t service-health-monitor:test .
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.9.8'
+      - run: terraform fmt -check -recursive terraform
+      - run: terraform -chdir=terraform init -backend=false
+      - run: terraform -chdir=terraform validate

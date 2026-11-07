@@ -40,3 +40,7 @@ Follow [the n8n setup](docs/n8n.md). The monitor sends its first result, then se
 ## GitHub
 
 Follow [the GitHub setup](docs/github.md) to push the project and run the tests in Actions.
+
+## Kubernetes
+
+Follow [the Kubernetes setup](docs/kubernetes.md) to deploy with Terraform and kind. It runs locally; no AWS account is needed.
